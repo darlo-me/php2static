@@ -32,3 +32,5 @@ inputFolder/										outputFolder/
 All folders or files under inputFolder/ that are hidden (starting with a .), are not touched by the script. .nophp permits to these untouched files to the output folder. This is to prevent untrusted content from being seen as if it was a file to be executed.
 
 NOTE: The script does what it can if there are errors. It will not clean after itself (check the output to see what fucked up).
+
+Note: Files included with Module( ) may return FALSE if an error has occured. This should permit for stopping loading of a page completely if a particular condition is not met inside the included file.
