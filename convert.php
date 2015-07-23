@@ -95,12 +95,14 @@ function Directory_Scan( $dir ) {
 				$r = false;
 				continue;
 			}
-
+			
 			// Strip the input folder (completely), as it won't be recognized by the templating engine.
 			if( ( $shortf = substr( $f, strlen( $GLOBALS['config']['input_folder'] ) ) ) === FALSE ) {
 				error( "Skipping $f, cannot extract \"" . $GLOBALS['config']['input_folder'] . "\"" . PHP_EOL );
 				continue;
 			}
+			// NOTE: We may have problems with global variables beind set/unset, we should probably exec( 'php' )
+			
 			// We want the errors from this.
 		  	$mod = (string)new Module( $shortf, true ); // true is to ignore autocomplete
 			
@@ -134,15 +136,16 @@ if( is_dir( $input . '.nophp' ) ) {
 	$output = array( );
 	$return = 0;
 
-	echo exec( 'cp -av ' . escapeshellarg( $input . '.nophp/.' ) . ' ' . escapeshellarg( $dest ), $output, $return );
+	echo exec( 'cp -Rv --no-preserve=mode ' . escapeshellarg( $input . '.nophp/.' ) . ' ' . escapeshellarg( $dest ), $output, $return ); // -av might be better, but we assume the user will want his files accessible.
+
 	foreach( $output as $line ) {
 		echo( $line . PHP_EOL );
 	}
 
-	if( $return != 0 )
+	if( $return != 0 ) {
 		error( "[ERROR] Could not copy .nophp to \"$input\", it might have been partially done." );
-
-	exit( -2 );
+		exit( -2 );
+	}
 }
 
 exit( 0 );

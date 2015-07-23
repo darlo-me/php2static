@@ -3,6 +3,7 @@ if( !isset( $config ) )
 	$config = array( );
 if( !isset( $config['input_folder'] ) )
 	$config['input_folder'] = './';
+
 if( substr( $config['input_folder'], -1 ) != '/' )
 	$config['input_folder'] .= '/';
 
@@ -17,6 +18,7 @@ class Module {
 	function __construct( $filename, $ignore_short=false ) {
 		$this->Arguments = array( );
 		$this->Output = array( );
+
 		$this->processed = false;
 		
 		// If only a filename is provided.
@@ -38,7 +40,9 @@ class Module {
 
 	public function Process( ) {
 		$this->processed = true;
+
 		$Arguments = $this->Arguments;
+
 		if( substr( $this->filename, -4 ) == '.php' ) {
 			if( !ob_start( ) )
 				throw new Exception( "Could not start output buffering." );
@@ -58,13 +62,21 @@ class Module {
 			throw new Exception( "Could not include \"" . $this->filename . "\", does the file exist? If it is a php file, is output buffering supported?" );
 
 		$this->fileContent = $r;
+
 		if( isset( $Output ) && is_array( $Output ) )
 			$this->Output = $Output;
 	}
 
 	public function __toString( ) {
-		if( !$this->processed )
-			$this->Process( );
+		if( !$this->processed ) {
+			// PHP is not good with toString, so we do a workaround to throw error
+			try {
+				$this->Process( );
+			} catch( Exception $e ) {
+				trigger_error( $e->getMessage( ) );
+				return false;
+			}
+		}
 
 		return $this->fileContent ? $this->fileContent : FALSE;
 	}
