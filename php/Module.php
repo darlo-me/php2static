@@ -1,12 +1,4 @@
 <?php
-if( !isset( $config ) )
-	$config = array( );
-if( !isset( $config['input_folder'] ) )
-	$config['input_folder'] = './';
-
-if( substr( $config['input_folder'], -1 ) != '/' )
-	$config['input_folder'] .= '/';
-
 class Module {
 	public $Arguments;
 	public $Output;
@@ -14,6 +6,19 @@ class Module {
 	private $filename;
 	private $fileContent;
 	private $processed;
+
+	private static $input_folder;
+
+	public static function input_folder( $ip = FALSE ) {
+		if( $ip ) {
+			if( substr( $ip, -1 ) != '/' )
+				$ip .= '/';
+			
+			self::$input_folder = $ip;
+		}
+
+		return self::$input_folder;
+	}
 
 	function __construct( $filename, $ignore_short=false ) {
 		$this->Arguments = array( );
@@ -35,7 +40,7 @@ class Module {
 			}
 		}
 
-		$this->filename = $GLOBALS['config']['input_folder'] . $filename;
+		$this->filename = self::$input_folder . $filename;
 	}
 
 	public function Process( ) {

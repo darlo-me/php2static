@@ -123,8 +123,18 @@ function Directory_Scan( $dir ) {
 				$mod = array( );
 				$return = -1;
 
-				$command = '$config = array( "input_folder" => "' . addslashes( $config['input_folder'] ) . '" ); include( "' . addslashes( stream_resolve_include_path( 'php/Module.php' ) ) . '" ); echo new Module( "' . addslashes( $shortf ) . '", true );';
-			
+# #################
+# note:
+# Module::input_folder is optional, as it could be set from the
+# executed script. Setting it here seems like a sane default
+# #################
+				$command = '
+require_once( "' . addslashes( stream_resolve_include_path( "php/Module.php" ) ) . '" );
+if( FALSE == Module::input_folder( "' . addslashes( stream_resolve_include_path( $config['input_folder'] ) ) . '" ) || !chdir( "' . addslashes( $dir ) . '" ) ) {
+	exit( 1 );
+}
+echo new Module( "' . addslashes( $shortf ) . '", true );';
+				
 				// Like eval, but isolated scope.
 				exec( 'php -r ' . escapeshellarg( $command ), $mod, $return );
 				
