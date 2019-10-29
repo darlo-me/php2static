@@ -28,7 +28,7 @@ abstract class ModuleBase {
 	private $moduleContent;
 
     /** @var string */
-	private static $inputFolder;
+	private static $inputFolder = ".parts/";
 
     /**
      * Set folder where to find modules
@@ -50,7 +50,7 @@ abstract class ModuleBase {
 
     /**
      * @param string $filename Filename of the module
-     * @param bool $directFilename Do not parse $filename
+     * @param bool $directFilename Do not parse $filename or add inputFolder
      */
 	function __construct( string $filename, bool $directFilename=false ) {
         if (!$directFilename) {
@@ -62,12 +62,12 @@ abstract class ModuleBase {
 
             // If it does not specify a folder and is not a hidden file, we assume .parts/
             // should be prepended.
-            if ($path['dirname'] === '.' && substr($filename, 0, 1) !== '.') {
-                $filename = '.parts/' . $filename;
+            if (substr($filename, 0, 1) !== "/") {
+                $filename = self::$inputFolder . $filename;
             }
 		}
 
-		$this->filename = self::$inputFolder . $filename;
+		$this->filename = $filename;
     }
 
     /**
