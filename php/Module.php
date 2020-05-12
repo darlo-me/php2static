@@ -148,7 +148,7 @@ class Module extends ModuleBase implements ArrayAccess {
             }
 		} else {
 			// Returns FALSE on failure.
-			$r = file_get_contents( $filename );
+			$r = file_get_contents( $filename, true );
 		}
 
 		if ($r === false) {
