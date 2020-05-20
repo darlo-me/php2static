@@ -12,13 +12,13 @@ abstract class ModuleBase implements \ArrayAccess {
     private $content = array();
 
     /** @var string path of the module */
-	private $filename;
+    private $filename;
 
     /** @var string|null content of the processed module */
-	private $moduleContent;
+    private $moduleContent;
 
     /** @var string */
-	private static $inputFolder = ".parts/";
+    private static $inputFolder = ".parts/";
 
     /**
      * Set folder where to find modules
@@ -42,22 +42,22 @@ abstract class ModuleBase implements \ArrayAccess {
      * @param string $filename Filename of the module
      * @param bool $directFilename Do not parse $filename or add inputFolder
      */
-	function __construct( string $filename, bool $directFilename=false ) {
+    function __construct( string $filename, bool $directFilename=false ) {
         if (!$directFilename) {
             $path = pathinfo($filename);
 
             if (!isset($path['extension'])) {
-				$filename .= '.php';
-			}
+                $filename .= '.php';
+            }
 
             // If it does not specify a folder and is not a hidden file, we assume .parts/
             // should be prepended.
             if (substr($filename, 0, 1) !== "/") {
                 $filename = self::$inputFolder . $filename;
             }
-		}
+        }
 
-		$this->filename = $filename;
+        $this->filename = $filename;
     }
 
     /**
@@ -125,24 +125,24 @@ abstract class ModuleBase implements \ArrayAccess {
 
 class Module extends ModuleBase {
     protected function _process(string $filename): string {
-		if (\substr($filename, -4) == '.php') {
-			if (!\ob_start( )) {
+        if (\substr($filename, -4) == '.php') {
+            if (!\ob_start( )) {
                 throw new \Exception( "Could not start output buffering." );
             }
 
             // Possible values: whatever include returns, (usually 1), or FALSE if it breaks.
             // ob_get_contents returns FALSE on failure too.
             $r = (include($filename)) !== false ? \ob_get_contents() : false;
-			
-			if (!ob_end_clean()) {
+            
+            if (!ob_end_clean()) {
                 throw new \Exception( "Could not clean the output buffer." );
             }
-		} else {
-			// Returns FALSE on failure.
-			$r = \file_get_contents( $filename, true );
-		}
+        } else {
+            // Returns FALSE on failure.
+            $r = \file_get_contents( $filename, true );
+        }
 
-		if ($r === false) {
+        if ($r === false) {
             throw new \Exception( "Could not include \"{$filename}\", does the file exist? If it is a php file, is output buffering supported?" );
         }
 
