@@ -3,6 +3,7 @@
 This file provides a class enabling simple viewer-controller communication.
 
 It is used like this:
+
 `controller.php`
 ```
 require_once 'Module.php';
@@ -13,6 +14,7 @@ $view = new Module('home');
 $view->parameter = "value";
 echo $view;
 ```
+
 `views/home.php`
 ```
 <div><?php echo $this->parameter; ?></div>
