@@ -22,7 +22,7 @@ echo $view;
 
 `php controller.php` will output `<div>value</div>`
 
-Modules can include other modules as parameters (e.g. you could `$view->paramter = new Module('test');`)
+Modules can include other modules as parameters (e.g. you could `$view->parameter = new Module('test');`)
 
 I use this in my [personal website](https://darlo.me/) to generate a static websites, but this can also be used for dynamic websites.
 
