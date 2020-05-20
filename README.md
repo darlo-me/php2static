@@ -3,10 +3,11 @@
 This file provides a class enabling simple viewer-controller communication.
 
 It is used like this:
-
 `controller.php`
 ```
 require_once 'Module.php';
+
+use php2static\Module;
 
 Module::setInputFolder('views'); // Set view folder
 
@@ -14,7 +15,6 @@ $view = new Module('home');
 $view->parameter = "value";
 echo $view;
 ```
-
 `views/home.php`
 ```
 <div><?php echo $this->parameter; ?></div>

@@ -1,5 +1,7 @@
 <?php
-abstract class ModuleBase implements ArrayAccess {
+namespace php2static;
+
+abstract class ModuleBase implements \ArrayAccess {
     /**
      * _process is used so that included files inside the Module class do not fuck with the internals of the module
      * e.g. included file could try using $this->inputFolder, expecting to use the inputFolder argument
@@ -81,7 +83,7 @@ abstract class ModuleBase implements ArrayAccess {
 
     /** ArrayAccess */
     public function offsetSet($offset, $value): void {
-        if (is_null($offset)) {
+        if (\is_null($offset)) {
             $this->content[] = $value;
         } else {
             $this->content[$offset] = $value;
@@ -98,7 +100,7 @@ abstract class ModuleBase implements ArrayAccess {
 
     public function &offsetGet($offset) {
         if(!isset($this->content[$offset])) {
-            throw new RuntimeException("Undefined offset {$offset}");
+            throw new \RuntimeException("Undefined offset {$offset}");
         }
         return $this->content[$offset]; // this does not return an error, since it is a reference
     }
@@ -123,21 +125,21 @@ abstract class ModuleBase implements ArrayAccess {
 
 class Module extends ModuleBase {
     protected function _process(string $filename): string {
-		if (substr($filename, -4) == '.php') {
-			if (!ob_start( )) {
+		if (\substr($filename, -4) == '.php') {
+			if (!\ob_start( )) {
                 throw new \Exception( "Could not start output buffering." );
             }
 
             // Possible values: whatever include returns, (usually 1), or FALSE if it breaks.
             // ob_get_contents returns FALSE on failure too.
-            $r = (include($filename)) !== false ? ob_get_contents() : false;
+            $r = (include($filename)) !== false ? \ob_get_contents() : false;
 			
 			if (!ob_end_clean()) {
                 throw new \Exception( "Could not clean the output buffer." );
             }
 		} else {
 			// Returns FALSE on failure.
-			$r = file_get_contents( $filename, true );
+			$r = \file_get_contents( $filename, true );
 		}
 
 		if ($r === false) {
