@@ -1,5 +1,5 @@
 <?php
-abstract class ModuleBase {
+abstract class ModuleBase implements ArrayAccess {
     /**
      * _process is used so that included files inside the Module class do not fuck with the internals of the module
      * e.g. included file could try using $this->inputFolder, expecting to use the inputFolder argument
@@ -108,18 +108,19 @@ abstract class ModuleBase {
         unset($this->content[$offset]);
     }
 
-    public function offsetGet($offset) {
-        return $this->content[$offset] ?? null;
+    public function &offsetGet($offset) {
+        if(!isset($this->content[$offset])) {
+            throw new RuntimeException("Undefined offset {$offset}");
+        }
+        return $this->content[$offset]; // this does not return an error, since it is a reference
     }
 
     /** Access as object */
     public function &__get($offset) {
-        //var_dump('getting: ' . $offset . " (is {$this->content[$offset]})");
-        return $this->content[$offset];
+        return $this->offsetGet($offset);
     }
 
     public function __set($offset, $value): void {
-        //var_dump('setting: ' . $offset . ' to ' . $value);
         $this->offsetSet($offset, $value);
     }
 
@@ -132,7 +133,7 @@ abstract class ModuleBase {
     }
 }
 
-class Module extends ModuleBase implements ArrayAccess {
+class Module extends ModuleBase {
     protected function _process(string $filename): string {
 		if (substr($filename, -4) == '.php') {
 			if (!ob_start( )) {
