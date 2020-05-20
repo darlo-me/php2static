@@ -27,3 +27,8 @@ Modules can include other modules as parameters (e.g. you could `$view->paramete
 I use this in my [personal website](https://darlo.me/) to generate a static websites, but this can also be used for dynamic websites.
 
 There used to be a static website generator in this repo, but I removed it, you should use your own build pipeline (e.g. make) for that.
+
+Please note that modules hanging will climb the calling tree.
+This means that a module which never finishes will cause the caller to never end (and to not return anything, as the module output is cached using `ob_start`)
+
+The reason `ob_start` is used is so that modules can return values and affect modules that may want to change preceding data (e.g. change headers, title, etc.)
