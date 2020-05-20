@@ -6,20 +6,8 @@ abstract class ModuleBase implements ArrayAccess {
      */
     abstract protected function _process(string $filename): string;
 
-    /** var array values shared with module using "$this->content", or Array/ObjectAccess if implemented */
+    /** @var array values shared with module using "$this->content", or Array/ObjectAccess */
     private $content = array();
-
-    public function addOutput($value) {
-        $this->output[] = $value;
-    }
-
-    public function setOutput(array $output): void {
-        $this->output = $output;
-    }
-
-    public function getOutput(): array {
-        return $this->output;
-    }
 
     /** @var string path of the module */
 	private $filename;
